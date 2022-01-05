@@ -10,7 +10,7 @@ COPY ["package.json", "./"]
 
 RUN npm install
 
-COPY /src .
+COPY ./src .
 
 ARG DB_NAME
 ARG DB_USER
