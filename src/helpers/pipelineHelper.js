@@ -42,13 +42,13 @@ class ScorePipelineHelper {
           }
         }
       }},
-      { $sort: {tableName: 1} },
       { $project: {
         tableId: '$_id.tableId',
         tableName: '$_id.tableName',
         scores: "$scores",
         _id: 0
       }},
+      { $sort: {tableName: 1} }
     ];
 
     if (tableName) { this.pipelineScoresByTable.splice(4, 0, { $match: {'tableName': tableName}})};
@@ -93,7 +93,6 @@ class ScorePipelineHelper {
           }
         }
       }},
-      { $sort: {tableName: 1, authorName: 1} },
       { $project: {
         tableId: '$_id.tableId',
         tableName: '$_id.tableName',
@@ -102,6 +101,7 @@ class ScorePipelineHelper {
         scores: "$scores",
         _id: 0
       }},
+      { $sort: {tableName: 1, authorName: 1} },
     ];
 
     if (tableName && authorName) { this.pipelineScoresByTableAndAuthor
@@ -147,7 +147,6 @@ class ScorePipelineHelper {
           }
         }
       }},
-      { $sort: {tableName: 1, authorName: 1} },
       { $project: {
         tableId: '$_id.tableId',
         tableName: '$_id.tableName',
@@ -158,6 +157,7 @@ class ScorePipelineHelper {
         scores: "$scores",
         _id: 0
       }},
+      { $sort: {tableName: 1, authorName: 1, versionNumber: -1} },
     ];
 
     if (tableName && authorName && versionNumber) { this.pipelineScoresByTableAndAuthorAndVersion
