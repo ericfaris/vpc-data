@@ -6,7 +6,7 @@ const ImageDataURI = require('image-data-uri');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-    res.send('API Home Page');
+    res.send('Hello World');
 })
 
 router.post('/convert', async (req, res) => {
