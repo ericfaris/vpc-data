@@ -6,18 +6,19 @@ const ImageDataURI = require('image-data-uri');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-    res.send('Hello World');
+    res.send('vpc-data');
 })
 
 router.post('/convert', async (req, res) => {
     let textToConvert = req.body.text;
     let filePath = req.body.filePath;
     let imageOptions = {
-        maxWidth: 720,
-        fontSize: 76,
-        fontFamily: 'Arial',
+        maxWidth: 1800,
+        fontSize: 60,
+        fontFamily: 'monospace',
+        fontFile: '../resources/Bittypix Monospace.otf',
         lineHeight: 80,
-        margin: 20,
+        margin: 10,
         bgColor: 'black',
         textColor: 'yellow',
     };
