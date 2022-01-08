@@ -82,14 +82,24 @@ class ScorePipelineHelper {
         },
         scores: {
           $push: {
-            versionId: '$versionId',
-            versionNumber: '$versionNumber',
-            scoreId: '$scoreId',
-            user: '$user',
-            userName: '$username',
-            score: '$score',
-            posted: '$posted',
-            postUrl: '$postUrl'
+            $cond: {
+              if: {
+                $ne:['$scoreId', null],
+              },
+              // then return its value as is
+              then: '$$REMOVE',
+              // else exclude this field
+              else: {
+                versionId: '$versionId',
+                versionNumber: '$versionNumber',
+                scoreId: '$scoreId',
+                user: '$user',
+                userName: '$username',
+                score: '$score',
+                posted: '$posted',
+                postUrl: '$postUrl',
+              }
+            }
           }
         }
       }},
