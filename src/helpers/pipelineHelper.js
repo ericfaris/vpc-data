@@ -86,9 +86,7 @@ class ScorePipelineHelper {
               if: {
                 $ne:['$scoreId', null],
               },
-              // then return its value as is
               then: '$$REMOVE',
-              // else exclude this field
               else: {
                 versionId: '$versionId',
                 versionNumber: '$versionNumber',
