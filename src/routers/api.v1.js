@@ -16,7 +16,6 @@ router.post('/convert', async (req, res) => {
         maxWidth: 1800,
         fontSize: 60,
         fontFamily: 'monospace',
-        fontFile: '../resources/Bittypix Monospace.otf',
         lineHeight: 80,
         margin: 10,
         bgColor: 'black',
