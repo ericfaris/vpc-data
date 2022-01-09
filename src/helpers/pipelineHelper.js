@@ -80,14 +80,11 @@ class ScorePipelineHelper {
           authorId: '$authorId',
           authorName: "$authorName",  
         },
-        scores: {
+        scores: { 
           $push: {
-            $cond: {
-              if: {
-                $ne:['$scoreId', null],
-              },
-              then: '$$REMOVE',
-              else: {
+            $cond: [
+              {$gt: ['$scoreId', 0]},
+              {
                 versionId: '$versionId',
                 versionNumber: '$versionNumber',
                 scoreId: '$scoreId',
@@ -95,9 +92,10 @@ class ScorePipelineHelper {
                 userName: '$username',
                 score: '$score',
                 posted: '$posted',
-                postUrl: '$postUrl',
-              }
-            }
+                postUrl: '$postUrl'
+              },
+              null
+            ]            
           }
         }
       }},
@@ -106,7 +104,7 @@ class ScorePipelineHelper {
         tableName: '$_id.tableName',
         authorId: '$_id.authorId',
         authorName: '$_id.authorName',
-        scores: "$scores",
+        scores: {$setDifference: ['$scores', [null]]},
         _id: 0
       }},
       { $sort: {tableName: 1, authorName: 1} },
