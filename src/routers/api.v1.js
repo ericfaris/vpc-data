@@ -1,5 +1,5 @@
 const mongoHelper = require('../helpers/mongoHelper');
-const { ScorePipelineHelper, SearchPipelineHelper } = require('../helpers/pipelineHelper');
+const { ScorePipelineHelper, SearchPipelineHelper, AllPipelineHelper } = require('../helpers/pipelineHelper');
 const express = require('express');
 const textToImage = require('text-to-image');
 const ImageDataURI = require('image-data-uri');
@@ -30,6 +30,12 @@ router.post('/convert', async (req, res) => {
 
 router.get('/tables', async (req, res) => {
     const tables = await mongoHelper.getAll('tables');
+    res.send(tables);
+});
+
+router.get('/tablesWithAuthorVersion', async (req, res) => {
+    let pipeline = (new AllPipelineHelper()).pipelineTablesWithAuthorVersion;
+    const tables = await mongoHelper.aggregate(pipeline, 'tables');
     res.send(tables);
 });
 

@@ -239,4 +239,53 @@ class SearchPipelineHelper {
   }
 }
 
-module.exports = { ScorePipelineHelper, SearchPipelineHelper }
+class AllPipelineHelper {
+  constructor() {
+      this.pipelineTablesWithAuthorVersion = [
+          { $unwind: "$authors" },
+          { $unwind: { "path": "$authors.versions", "preserveNullAndEmptyArrays": true } },
+          { $project: {
+            tableId: { $toString: "$_id" },
+            tableName: '$tableName',
+            authorId: { $toString: "$authors._id" },
+            authorName: "$authors.authorName",
+            versionId: { $toString: "$authors.versions._id" },
+            versionNumber: '$authors.versions.versionNumber',
+            tableUrl: '$authors.versions.versionUrl',
+            scores: '$authors.versions.scores',
+            postUrl: '$authors.versions.scores.postUrl',
+            _id: 0
+          }},
+          { $sort: { tableName: 1, authorName: -1, versionNumber: -1 } },
+          { $group: {
+            _id: {
+              tableId: "$tableId",
+              tableName: "$tableName",
+              authorId: '$authorId',
+              authorName: "$authorName",  
+            },
+            versionId: { $first: '$versionId' },
+            versionNumber: { $first: '$versionNumber' },
+            tableUrl: { $first: '$tableUrl' },
+            scores: { $first: '$scores' },
+            postUrl: { $first: '$postUrl' },
+          }},
+          { $project: {
+            tableId: "$_id.tableId",
+            tableName: "$_id.tableName",
+            authorId: '$_id.authorId',
+            authorName: "$_id.authorName",  
+            versionId: '$versionId',
+            versionNumber: '$versionNumber',
+            tableUrl: '$tableUrl',
+            scores: '$scores',
+            postUrl: '$postUrl',
+            _id: 0
+          }},
+          { $sort: { tableName: 1, authorName: -1, versionNumber: -1 } }
+      ];
+  }
+}
+
+
+module.exports = { ScorePipelineHelper, SearchPipelineHelper, AllPipelineHelper }
