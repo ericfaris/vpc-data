@@ -171,4 +171,72 @@ class ScorePipelineHelper {
   }
 }
 
-module.exports = { ScorePipelineHelper }
+class SearchPipelineHelper {
+  constructor(searchTerm) {
+    this.pipelineScoresByTableAndAuthorUsingFuzzyTableSearch = [
+      { $match: { tableName: { $regex: '.*' + searchTerm + '.*', $options: 'i' } } },
+      { $unwind: "$authors" },
+      { $unwind: { "path": "$authors.versions", "preserveNullAndEmptyArrays": true } },
+      { $unwind: { "path": "$authors.versions.scores", "preserveNullAndEmptyArrays": true } },
+      {
+        $project: {
+          tableId: '$_id',
+          tableName: '$tableName',
+          authorId: '$authors._id',
+          authorName: "$authors.authorName",
+          versionId: '$authors.versions._id',
+          versionNumber: '$authors.versions.versionNumber',
+          scoreId: '$authors.versions.scores._id',
+          user: '$authors.versions.scores.user',
+          userName: '$authors.versions.scores.username',
+          score: '$authors.versions.scores.score',
+          posted: '$authors.versions.scores.createdAt',
+          postUrl: '$authors.versions.scores.postUrl',
+          _id: 0
+        }
+      },
+      { $sort: { tableName: 1, authorName: 1, score: -1 } },
+      {
+        $group: {
+          _id: {
+            tableId: "$tableId",
+            tableName: "$tableName",
+            authorId: '$authorId',
+            authorName: "$authorName",
+          },
+          scores: {
+            $push: {
+              $cond: [
+                { $gt: ['$scoreId', 0] },
+                {
+                  versionId: '$versionId',
+                  versionNumber: '$versionNumber',
+                  scoreId: '$scoreId',
+                  user: '$user',
+                  userName: '$username',
+                  score: '$score',
+                  posted: '$posted',
+                  postUrl: '$postUrl'
+                },
+                null
+              ]
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          tableId: '$_id.tableId',
+          tableName: '$_id.tableName',
+          authorId: '$_id.authorId',
+          authorName: '$_id.authorName',
+          scores: { $setDifference: ['$scores', [null]] },
+          _id: 0
+        }
+      },
+      { $sort: { tableName: 1, authorName: 1 } },
+    ]; 
+  }
+}
+
+module.exports = { ScorePipelineHelper, SearchPipelineHelper }

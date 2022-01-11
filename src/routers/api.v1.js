@@ -1,5 +1,5 @@
 const mongoHelper = require('../helpers/mongoHelper');
-const { ScorePipelineHelper } = require('../helpers/pipelineHelper');
+const { ScorePipelineHelper, SearchPipelineHelper } = require('../helpers/pipelineHelper');
 const express = require('express');
 const textToImage = require('text-to-image');
 const ImageDataURI = require('image-data-uri');
@@ -40,10 +40,24 @@ router.get('/scoresByTable', async (req, res) => {
     res.send(table);
 });
 
+router.get('/scoresByTable', async (req, res) => {
+    let tableName = req.query.tableName;
+    let pipeline = (new ScorePipelineHelper(tableName, null, null)).pipelineScoresByTable;
+    const table = await mongoHelper.aggregate(pipeline, 'tables');
+    res.send(table);
+});
+
 router.get('/scoresByTableAndAuthor', async (req, res) => {
     let tableName = req.query.tableName;
     let authorName = req.query.authorName;
     let pipeline = (new ScorePipelineHelper(tableName, authorName, null)).pipelineScoresByTableAndAuthor;
+    const table = await mongoHelper.aggregate(pipeline, 'tables');
+    res.send(table);
+});
+
+router.get('/scoresByTableAndAuthorUsingFuzzyTableSearch', async (req, res) => {
+    let tableSearchTerm = req.query.tableSearchTerm;
+    let pipeline = (new SearchPipelineHelper(tableSearchTerm)).pipelineScoresByTableAndAuthorUsingFuzzyTableSearch;
     const table = await mongoHelper.aggregate(pipeline, 'tables');
     res.send(table);
 });
