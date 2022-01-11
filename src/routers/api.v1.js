@@ -75,5 +75,9 @@ router.get('/weeks', async (req, res) => {
     const weeks = await mongoHelper.getAll('weeks');
     res.send(weeks);
 });
+router.get('/currentWeek', async (req, res) => {
+    const week = await mongoHelper.findCurrentWeek('weeks');
+    res.send(week);
+});
 
 module.exports = router;
