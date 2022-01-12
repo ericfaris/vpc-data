@@ -1,30 +1,30 @@
 const mongoHelper = require('../helpers/mongoHelper');
 const { ScorePipelineHelper, SearchPipelineHelper, AllPipelineHelper } = require('../helpers/pipelineHelper');
 const express = require('express');
-const textToImage = require('text-to-image');
-const ImageDataURI = require('image-data-uri');
 const router = express.Router();
+const {CanvasHelper} = require('../helpers/canvasHelper')
 
 router.get('/', function (req, res) {
     res.send('vpc-data');
 })
 
 router.post('/convert', async (req, res) => {
+    let canvasHelper = new CanvasHelper();
     let textToConvert = req.body.text;
     let filePath = req.body.filePath;
     let imageOptions = {
         maxWidth: 1800,
-        fontSize: 60,
+        fontSize: 30,
         fontFamily: 'monospace',
-        lineHeight: 80,
-        margin: 10,
+        fontPath: './src/resources/ponde___.ttf',
+        lineHeight: 40,
+        margin: 60,
         bgColor: 'black',
         textColor: 'yellow',
+        keepSpaces: true,
     };
 
-    const dataUri = await textToImage.generate(textToConvert, imageOptions);
-    ImageDataURI.outputFile(dataUri, filePath);
-    // res.sendStatus(200);
+    const dataUri = await canvasHelper.generate(textToConvert, imageOptions);
     res.send(dataUri);
 });
 
