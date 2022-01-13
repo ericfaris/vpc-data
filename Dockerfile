@@ -22,4 +22,4 @@ ENV DB_PASSWORD $DB_PASSWORD
 
 EXPOSE 6080
 
-CMD [ "node", "./src/index.js" ]
+CMD [ "node", "./app//src/index.js" ]
