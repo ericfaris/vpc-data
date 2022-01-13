@@ -15,7 +15,7 @@ router.post('/convert', async (req, res) => {
         maxWidth: 1400,
         fontSize: 30,
         fontFamily: 'monospace',
-        fontPath: './src/resources/ponde___.ttf',
+        fontPath: './resources/ponde___.ttf',
         lineHeight: 40,
         margin: 60,
         bgColor: 'black',
