@@ -11,9 +11,8 @@ router.get('/', function (req, res) {
 router.post('/convert', async (req, res) => {
     let canvasHelper = new CanvasHelper();
     let textToConvert = req.body.text;
-    let filePath = req.body.filePath;
     let imageOptions = {
-        maxWidth: 1800,
+        maxWidth: 1400,
         fontSize: 30,
         fontFamily: 'monospace',
         fontPath: './src/resources/ponde___.ttf',
@@ -23,7 +22,6 @@ router.post('/convert', async (req, res) => {
         textColor: 'yellow',
         keepSpaces: true,
     };
-
     const dataUri = await canvasHelper.generate(textToConvert, imageOptions);
     res.send(dataUri);
 });
@@ -81,6 +79,7 @@ router.get('/weeks', async (req, res) => {
     const weeks = await mongoHelper.getAll('weeks');
     res.send(weeks);
 });
+
 router.get('/currentWeek', async (req, res) => {
     const week = await mongoHelper.findCurrentWeek('weeks');
     res.send(week);
