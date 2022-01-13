@@ -2,15 +2,16 @@
 
 FROM node:16.6
 
-WORKDIR /app
-
 RUN mkdir -p /app/data
+RUN mkdir -p /app/src
+
+WORKDIR /app/src
 
 COPY ["package.json", "./"]
 
 RUN npm install
 
-COPY ./src .
+COPY ./src ./
 
 ARG DB_NAME
 ARG DB_USER
