@@ -3,15 +3,14 @@
 FROM node:16.6
 
 RUN mkdir -p /app/data
-RUN mkdir -p /app/src
 
-WORKDIR /app/src
+WORKDIR /app
 
 COPY ["package.json", "./"]
 
 RUN npm install
 
-COPY ./src ./
+COPY . .
 
 ARG DB_NAME
 ARG DB_USER
@@ -23,4 +22,4 @@ ENV DB_PASSWORD $DB_PASSWORD
 
 EXPOSE 6080
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "/src/index.js" ]
