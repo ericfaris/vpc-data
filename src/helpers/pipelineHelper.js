@@ -174,7 +174,7 @@ class ScorePipelineHelper {
 class SearchPipelineHelper {
   constructor(searchTerm) {
     this.pipelineScoresByTableAndAuthorUsingFuzzyTableSearch = [
-      { $match: { tableName: { $regex: '.*' + searchTerm + '.*', $options: 'i' } } },
+      { $match: { tableName: { $regex: `.*${searchTerm}*`, $options: 'i' } } },
       { $unwind: "$authors" },
       { $unwind: { "path": "$authors.versions", "preserveNullAndEmptyArrays": true } },
       { $unwind: { "path": "$authors.versions.scores", "preserveNullAndEmptyArrays": true } },
