@@ -171,6 +171,68 @@ class ScorePipelineHelper {
   }
 }
 
+class ScorePipelineHelper2 {
+  constructor(vpsId) {
+    this.pipelineScoresByVpsId = [
+      { $unwind: "$authors" },
+      { $unwind: { "path": "$authors.versions", "preserveNullAndEmptyArrays": true } },
+      { $unwind: { "path": "$authors.versions.scores", "preserveNullAndEmptyArrays": true } },
+      { $project: {
+        tableId: '$_id',
+        tableName: '$tableName',
+        authorId: '$authors._id',
+        authorName: "$authors.authorName",
+        vpsId: "$authors.vpsId",
+        versionId: '$authors.versions._id',
+        versionNumber: '$authors.versions.versionNumber',
+        scoreId: '$authors.versions.scores._id',
+        user: '$authors.versions.scores.user',
+        userName: '$authors.versions.scores.username',
+        score: '$authors.versions.scores.score',
+        posted: '$authors.versions.scores.createdAt',
+        postUrl: '$authors.versions.scores.postUrl',
+        _id: 0
+      }},
+      { $sort: {vpsId: 1, score: -1} },
+      { $group: {
+        _id: {
+          vpsId: "$vpsId"
+        },
+        scores: { 
+          $push: {
+            $cond: [
+              {$gt: ['$scoreId', 0]},
+              {
+                tableId: "$tableId",
+                tableName: "$tableName",
+                authorId: '$authorId',
+                authorName: "$authorName",                 
+                versionId: '$versionId',
+                versionNumber: '$versionNumber',
+                scoreId: '$scoreId',
+                user: '$user',
+                userName: '$username',
+                score: '$score',
+                posted: '$posted',
+                postUrl: '$postUrl'
+              },
+              null
+            ]            
+          }
+        }
+      }},
+      { $project: {
+        vpsId: '$_id.vpsId',
+        scores: {$setDifference: ['$scores', [null]]},
+        _id: 0
+      }},
+      { $sort: {vpsId: 1} },
+    ];
+
+    if (vpsId) { this.pipelineScoresByVpsId.splice(4, 0, { $match: {'vpsId': vpsId}})};
+  }
+}
+
 class SearchPipelineHelper {
   constructor(searchTerm) {
     this.pipelineScoresByTableAndAuthorUsingFuzzyTableSearch = [
@@ -287,5 +349,4 @@ class AllPipelineHelper {
   }
 }
 
-
-module.exports = { ScorePipelineHelper, SearchPipelineHelper, AllPipelineHelper }
+module.exports = { ScorePipelineHelper, ScorePipelineHelper2, SearchPipelineHelper, AllPipelineHelper }

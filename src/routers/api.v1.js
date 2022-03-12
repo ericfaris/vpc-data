@@ -1,5 +1,5 @@
 const mongoHelper = require('../helpers/mongoHelper');
-const { ScorePipelineHelper, SearchPipelineHelper, AllPipelineHelper } = require('../helpers/pipelineHelper');
+const { ScorePipelineHelper, ScorePipelineHelper2, SearchPipelineHelper, AllPipelineHelper } = require('../helpers/pipelineHelper');
 const express = require('express');
 const router = express.Router();
 const {CanvasHelper} = require('../helpers/canvasHelper')
@@ -55,6 +55,13 @@ router.get('/scoresByTableAndAuthor', async (req, res) => {
     let tableName = req.query.tableName;
     let authorName = req.query.authorName;
     let pipeline = (new ScorePipelineHelper(tableName, authorName, null)).pipelineScoresByTableAndAuthor;
+    const table = await mongoHelper.aggregate(pipeline, 'tables');
+    res.send(table);
+});
+
+router.get('/scoresByVpsId', async (req, res) => {
+    let vpsId = req.query.vpsId;
+    let pipeline = (new ScorePipelineHelper2(vpsId)).pipelineScoresByVpsId;
     const table = await mongoHelper.aggregate(pipeline, 'tables');
     res.send(table);
 });
