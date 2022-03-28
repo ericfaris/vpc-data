@@ -5,7 +5,7 @@ const router = express.Router();
 const {CanvasHelper} = require('../helpers/canvasHelper')
 
 router.get('/', function (req, res) {
-    res.send('vpc-data');
+    res.send('VPC Data Service is up and running...');
 })
 
 router.post('/convert', async (req, res) => {
