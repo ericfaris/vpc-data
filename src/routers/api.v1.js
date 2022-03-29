@@ -87,6 +87,29 @@ router.get('/weeks', async (req, res) => {
     res.send(weeks);
 });
 
+router.get('/weeksByChannelName', async (req, res) => {
+    const pipeline = [
+        { $group: {
+            _id: {
+            channelName: "$channelName",
+            },
+            weeks: {
+                $addToSet : "$$ROOT"
+            }
+        }},
+        { $project: {
+            _id: 0,
+            channelName: '$_id.channelName',
+            weeks: '$weeks'}
+        },
+        { $sort: {channelName: 1} },
+    ];
+    const weeks = await mongoHelper.aggregate(pipeline, 'weeks');
+    
+    res.send(weeks);
+});
+
+
 router.get('/currentWeek', async (req, res) => {
     const week = await mongoHelper.findCurrentWeek('weeks');
     res.send(week);
