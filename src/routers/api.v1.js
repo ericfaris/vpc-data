@@ -109,9 +109,9 @@ router.get('/weeksByChannelName', async (req, res) => {
     res.send(weeks);
 });
 
-
 router.get('/currentWeek', async (req, res) => {
-    const week = await mongoHelper.findCurrentWeek('weeks');
+    let channelName = (req.query.channelName ?? 'competition-corner');
+    const week = await mongoHelper.findCurrentWeek('weeks', channelName);
     res.send(week);
 });
 

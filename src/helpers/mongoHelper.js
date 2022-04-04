@@ -75,10 +75,10 @@ module.exports = {
         return doc;
     },
 
-    findCurrentWeek: async (collectionName) => {
+    findCurrentWeek: async (collectionName, channelName) => {
         const client = await module.exports.connect();
         const collection = await module.exports.getCollection(client, collectionName)
-        const doc = await collection.findOne({ isArchived: false });
+        const doc = await collection.findOne({ isArchived: false, channelName: channelName});
         client.close();
         return doc;
     },
