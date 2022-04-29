@@ -193,10 +193,11 @@ class ScorePipelineHelper2 {
         postUrl: '$authors.versions.scores.postUrl',
         _id: 0
       }},
-      { $sort: {vpsId: 1, score: -1} },
+      { $sort: {tableName: 1, score: -1} },
       { $group: {
         _id: {
-          vpsId: "$vpsId"
+          vpsId: "$vpsId",
+          tableName: "$tableName"
         },
         scores: { 
           $push: {
@@ -223,10 +224,11 @@ class ScorePipelineHelper2 {
       }},
       { $project: {
         vpsId: '$_id.vpsId',
+        tableName: '$_id.tableName',
         scores: {$setDifference: ['$scores', [null]]},
         _id: 0
       }},
-      { $sort: {vpsId: 1} },
+      { $sort: {tableName: 1} },
     ];
 
     if (vpsId) { this.pipelineScoresByVpsId.splice(4, 0, { $match: {'vpsId': vpsId}})};
@@ -246,6 +248,7 @@ class SearchPipelineHelper {
           tableName: '$tableName',
           authorId: '$authors._id',
           authorName: "$authors.authorName",
+          vpsId: "$authors.vpsId",
           versionId: '$authors.versions._id',
           versionNumber: '$authors.versions.versionNumber',
           scoreId: '$authors.versions.scores._id',
@@ -257,14 +260,13 @@ class SearchPipelineHelper {
           _id: 0
         }
       },
-      { $sort: { tableName: 1, authorName: 1, score: -1 } },
+      { $sort: { tableName: 1, vpsId: 1, score: -1 } },
       {
         $group: {
           _id: {
             tableId: "$tableId",
             tableName: "$tableName",
-            authorId: '$authorId',
-            authorName: "$authorName",
+            vpsId: '$vpsId'
           },
           scores: {
             $push: {
@@ -290,13 +292,13 @@ class SearchPipelineHelper {
         $project: {
           tableId: '$_id.tableId',
           tableName: '$_id.tableName',
-          authorId: '$_id.authorId',
-          authorName: '$_id.authorName',
+          vpsId: '$_id.vpsId',
+          authorName: '$authorName',
           scores: { $setDifference: ['$scores', [null]] },
           _id: 0
         }
       },
-      { $sort: { tableName: 1, authorName: 1 } },
+      { $sort: { tableName: 1, vpsId: 1 } },
     ]; 
   }
 }
