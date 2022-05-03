@@ -67,7 +67,7 @@ router.get('/scoresByVpsId', async (req, res) => {
 });
 
 router.get('/scoresByTableAndAuthorUsingFuzzyTableSearch', async (req, res) => {
-    let tableSearchTerm = req.query.tableSearchTerm;
+    let tableSearchTerm = req.query.tablesearchterm;
     let pipeline = (new SearchPipelineHelper(tableSearchTerm)).pipelineScoresByTableAndAuthorUsingFuzzyTableSearch;
     const table = await mongoHelper.aggregate(pipeline, 'tables');
     res.send(table);

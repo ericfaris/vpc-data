@@ -266,6 +266,8 @@ class SearchPipelineHelper {
           _id: {
             tableId: "$tableId",
             tableName: "$tableName",
+            authorId: '$authorId',
+            authorName: "$authorName",
             vpsId: '$vpsId'
           },
           scores: {
@@ -292,8 +294,9 @@ class SearchPipelineHelper {
         $project: {
           tableId: '$_id.tableId',
           tableName: '$_id.tableName',
+          authorId: '$_id.authorId',
+          authorName: "$_id.authorName",
           vpsId: '$_id.vpsId',
-          authorName: '$authorName',
           scores: { $setDifference: ['$scores', [null]] },
           _id: 0
         }
