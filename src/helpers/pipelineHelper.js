@@ -196,8 +196,9 @@ class ScorePipelineHelper2 {
       { $sort: {tableName: 1, score: -1} },
       { $group: {
         _id: {
-          vpsId: "$vpsId",
-          tableName: "$tableName"
+          vpsId: 'vpsId',
+          tableName: '$tableName',
+          authorName: '$authorName'
         },
         scores: { 
           $push: {
@@ -225,10 +226,11 @@ class ScorePipelineHelper2 {
       { $project: {
         vpsId: '$_id.vpsId',
         tableName: '$_id.tableName',
+        authorName: '$_id.authorName',
         scores: {$setDifference: ['$scores', [null]]},
         _id: 0
       }},
-      { $sort: {tableName: 1} },
+      { $sort: {tableName: 1, authorName: 1} },
     ];
 
     if (vpsId) { this.pipelineScoresByVpsId.splice(4, 0, { $match: {'vpsId': vpsId}})};
@@ -305,7 +307,6 @@ class SearchPipelineHelper {
     ]; 
   }
 }
-
 class AllPipelineHelper {
   constructor() {
       this.pipelineTablesWithAuthorVersion = [
