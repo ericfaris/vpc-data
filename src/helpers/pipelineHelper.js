@@ -196,7 +196,7 @@ class ScorePipelineHelper2 {
       { $sort: {tableName: 1, score: -1} },
       { $group: {
         _id: {
-          vpsId: 'vpsId',
+          vpsId: '$vpsId',
           tableName: '$tableName',
           authorName: '$authorName'
         },
