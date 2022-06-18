@@ -183,6 +183,7 @@ class ScorePipelineHelper2 {
         authorId: '$authors._id',
         authorName: "$authors.authorName",
         vpsId: "$authors.vpsId",
+        comment: "$authors.comment",
         versionId: '$authors.versions._id',
         versionNumber: '$authors.versions.versionNumber',
         scoreId: '$authors.versions.scores._id',
@@ -196,9 +197,10 @@ class ScorePipelineHelper2 {
       { $sort: {tableName: 1, score: -1} },
       { $group: {
         _id: {
-          vpsId: '$vpsId',
           tableName: '$tableName',
-          authorName: '$authorName'
+          authorName: '$authorName',
+          vpsId: '$vpsId',
+          comment: '$comment'
         },
         scores: { 
           $push: {
@@ -227,6 +229,7 @@ class ScorePipelineHelper2 {
         vpsId: '$_id.vpsId',
         tableName: '$_id.tableName',
         authorName: '$_id.authorName',
+        comment: '$_id.comment',
         scores: {$setDifference: ['$scores', [null]]},
         _id: 0
       }},
